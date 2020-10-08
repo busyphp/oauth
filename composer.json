@@ -1,0 +1,37 @@
+{
+	"name"        : "busyphp/oauth",
+	"type"        : "library",
+	"description" : "",
+	"authors"     : [
+		{
+			"name"  : "busy^life",
+			"email" : "busy.life@qq.com"
+		}
+	],
+	"license"     : "Apache-2.0",
+	"require"     : {
+		"php"             : ">=7.1.0",
+		"busyphp/busyphp" : "^3.0"
+	},
+	"require-dev" : {
+		"symfony/var-dumper" : "^4.2"
+	},
+	"autoload"    : {
+		"psr-4" : {
+			"BusyPHP\\oauth\\" : "src"
+		}
+	},
+	"extra"       : {
+		"busyphp" : {
+			"services" : [
+				"think\\app\\Service"
+			],
+			"config"   : {
+				"oauth" : "src/config.php"
+			}
+		}
+	},
+	"config"      : {
+		"preferred-install" : "dist"
+	}
+}
