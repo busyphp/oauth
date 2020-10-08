@@ -1,62 +1,47 @@
 <?php
 
-namespace BusyPHP\oauth\interfaces {
+namespace BusyPHP\oauth\interfaces;
+
+/**
+ * APP授权登录基本接口
+ * @author busy^life <busy.life@qq.com>
+ * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2020/7/9 下午7:45 下午 OAuthAPP.php $
+ */
+abstract class OAuthApp implements OAuth
+{
+    /**
+     * 数据
+     * @var OAuthAppData
+     */
+    protected $data;
+    
     
     /**
-     * APP授权登录基本接口
-     * @author busy^life <busy.life@qq.com>
-     * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
-     * @version $Id: 2020/7/9 下午7:45 下午 OAuthAPP.php $
+     * OAuthAPP constructor.
+     * @param OAuthAppData $data 三方给的数据
      */
-    abstract class OAuthApp implements OAuth
+    public function __construct(OAuthAppData $data)
     {
-        /**
-         * 数据
-         * @var OAuthApp_Data
-         */
-        protected $data;
-        
-        
-        /**
-         * OAuthAPP constructor.
-         * @param OAuthApp_Data $data 三方给的数据
-         */
-        public function __construct(OAuthApp_Data $data)
-        {
-            $this->data = $data;
-        }
-        
-        
-        /**
-         * 执行申请授权
-         * @param string $redirectUri 回调地址
-         */
-        public function onApplyAuth($redirectUri)
-        {
-        }
-        
-        
-        /**
-         * 换取票据
-         * @return string
-         */
-        public function onGetAccessToken()
-        {
-            return '';
-        }
+        $this->data = $data;
     }
     
     
     /**
-     * Class OAuthApp_Data
-     * @package core\interfaces\oauth
+     * 执行申请授权
+     * @param string $redirectUri 回调地址
      */
-    abstract class OAuthApp_Data
+    public function onApplyAuth($redirectUri)
     {
-        /**
-         * 获取数据
-         * @return array
-         */
-        abstract function getData();
+    }
+    
+    
+    /**
+     * 换取票据
+     * @return string
+     */
+    public function onGetAccessToken()
+    {
+        return '';
     }
 }

@@ -10,7 +10,7 @@ use BusyPHP\Model;
 use BusyPHP\model\Field;
 use BusyPHP\oauth\interfaces\OAuth;
 use BusyPHP\oauth\interfaces\OAuthApp;
-use BusyPHP\oauth\interfaces\OAuthApp_Data;
+use BusyPHP\oauth\interfaces\OAuthAppData;
 use BusyPHP\oauth\interfaces\OAuthModel;
 use Exception;
 
@@ -149,12 +149,12 @@ class MemberOauth extends Model
     
     /**
      * 获取APP登录OAuth对象
-     * @param int           $type 登录方式
-     * @param OAuthApp_Data $data 登录数据
+     * @param int          $type 登录方式
+     * @param OAuthAppData $data 登录数据
      * @return OAuthApp
      * @throws AppException
      */
-    public function getOAuthApp(int $type, OAuthApp_Data $data)
+    public function getOAuthApp(int $type, OAuthAppData $data)
     {
         $class = $this->getOAuthClassName($type);
         
