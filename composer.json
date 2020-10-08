@@ -24,7 +24,7 @@
 	"extra"       : {
 		"busyphp" : {
 			"services" : [
-				"think\\app\\Service"
+				"BusyPHP\\oauth\\Service"
 			],
 			"config"   : {
 				"oauth" : "src/config.php"
