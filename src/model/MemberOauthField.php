@@ -60,6 +60,18 @@ class MemberOauthField extends Field
     public $updateTime = null;
     
     /**
+     * 上次登录时间
+     * @var int
+     */
+    public $lastTime = null;
+    
+    /**
+     * 上次登录IP
+     * @var string
+     */
+    public $lastIp = null;
+    
+    /**
      * 登录次数
      * @var int
      */
@@ -72,22 +84,10 @@ class MemberOauthField extends Field
     public $loginIp = null;
     
     /**
-     * 上次登录时间
-     * @var int
-     */
-    public $lastTime = null;
-    
-    /**
      * 登录时间
      * @var int
      */
     public $loginTime = null;
-    
-    /**
-     * 上次登录IP
-     * @var string
-     */
-    public $lastIp = null;
     
     /**
      * 昵称

@@ -16,7 +16,7 @@ use BusyPHP\model\Field;
 interface OAuthModel
 {
     /**
-     * 执行OAuth注册账户
+     * 执行OAuth注册账户，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
      * @param Field $field 注册的数据
      * @return int 注册后的用户ID
      * @throws AppException
@@ -25,7 +25,7 @@ interface OAuthModel
     
     
     /**
-     * 执行OAuth更新账户
+     * 执行OAuth更新账户，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
      * @param int   $userId 会员ID
      * @param Field $field 更新的数据
      */
