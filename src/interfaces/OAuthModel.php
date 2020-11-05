@@ -28,6 +28,7 @@ interface OAuthModel
      * 执行OAuth更新账户，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
      * @param int   $userId 会员ID
      * @param Field $field 更新的数据
+     * @throws AppException
      */
     public function onOAuthUpdate($userId, Field $field);
     
