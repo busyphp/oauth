@@ -29,6 +29,9 @@ use Exception;
  */
 class MemberOauth extends Model
 {
+    protected $bindParseClass = MemberOauthInfo::class;
+    
+    
     public function __construct()
     {
         parent::__construct();
@@ -230,12 +233,13 @@ class MemberOauth extends Model
     
     /**
      * 通过OAuth数据和注册数据进行绑定
-     * @param OAuth                         $oauth
-     * @param OnOAuthBindOrRegisterCallback $callback
+     * @param OAuth                         $oauth 三方登录接口
+     * @param OnOAuthBindOrRegisterCallback $callback 回调
+     * @param bool                          $disabledTrans 是否禁用事物
      * @return MemberOauthInfo
      * @throws Exception
      */
-    public function bindByOAuthOrRegister(OAuth $oauth, OnOAuthBindOrRegisterCallback $callback) : MemberOauthInfo
+    public function bindByOAuthOrRegister(OAuth $oauth, OnOAuthBindOrRegisterCallback $callback, $disabledTrans = false) : MemberOauthInfo
     {
         // 执行绑定
         // 1. 用户已经在同厂商不通客户端登录，如：已经在公众号绑定，没有在app上绑定
@@ -243,7 +247,7 @@ class MemberOauth extends Model
         $info = $this->bindByOAuth($oauth);
         
         
-        $this->startTrans();
+        $this->startTrans($disabledTrans);
         try {
             $memberModel = $this->getOAuthModel();
             
@@ -273,11 +277,11 @@ class MemberOauth extends Model
                 }
             }
             
-            $this->commit();
+            $this->commit($disabledTrans);
             
             return $info;
         } catch (Exception $e) {
-            $this->rollback();
+            $this->rollback($disabledTrans);
             
             throw $e;
         }
@@ -309,7 +313,7 @@ class MemberOauth extends Model
             
             // 绑定记录不存在则需要绑定
             if (!$info) {
-                $info = $this->bindByOAuthOrRegister($oauth, $callback);
+                $info = $this->bindByOAuthOrRegister($oauth, $callback, true);
             }
             
             // 执行会员登录

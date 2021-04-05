@@ -24,7 +24,7 @@ interface OnOAuthBindOrRegisterCallback
     
     
     /**
-     * 返回注册数据
+     * 返回要执行注册的数据
      * @param OAuth $oauth
      * @return Field
      */
@@ -32,7 +32,9 @@ interface OnOAuthBindOrRegisterCallback
     
     
     /**
-     * 返回更新数据
+     * 返回要执行更新的数据
+     * 比如用户头像依赖三方头像，那么执行绑定的时候会拿到最新的头像，可以在此时更新
+     * # 感觉没啥意义，因为在执行 {@see OAuthModel::onOAuthLogin()} 的时候也可以进行更新
      * @param MemberOauthInfo $oauthInfo
      * @return Field
      */
