@@ -252,13 +252,13 @@ class MemberOauth extends Model
             // 2. 用户已注册过，但是没有绑定任何记录
             if (false === $info) {
                 // 执行查重回调
-                $userId = $callback->onCheckRegisterRepeat();
+                $userId = $callback->onCheckRegisterRepeat($oauth);
                 
                 // 代表用户已注册，则直接为其绑定
                 if ($userId > 0) {
                     $info = $this->bindByOAuthAndUserId($oauth, $userId);
                 } else {
-                    $userId = $memberModel->onOAuthRegister($callback->onGetRegisterField());
+                    $userId = $memberModel->onOAuthRegister($callback->onGetRegisterField($oauth));
                     if ($userId < 1) {
                         throw new AppException('onGetRegisterField方法必须返回有效的会员ID');
                     }
@@ -267,7 +267,7 @@ class MemberOauth extends Model
                 }
             } else {
                 // 有数据则更新
-                $field = $callback->onGetUpdateField();
+                $field = $callback->onGetUpdateField($info);
                 if ($field->getDBData()) {
                     $memberModel->onOAuthUpdate($info, $field);
                 }
