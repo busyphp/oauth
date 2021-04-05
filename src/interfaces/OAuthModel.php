@@ -2,9 +2,10 @@
 
 namespace BusyPHP\oauth\interfaces;
 
-use BusyPHP\exception\AppException;
 use BusyPHP\Model;
 use BusyPHP\model\Field;
+use BusyPHP\oauth\model\info\MemberOauthInfo;
+use Exception;
 
 /**
  * OAuth登录模型接口
@@ -16,30 +17,30 @@ use BusyPHP\model\Field;
 interface OAuthModel
 {
     /**
-     * 执行OAuth注册账户，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
+     * 执行OAuth注册账户，注意内部无需启用事物
      * @param Field $field 注册的数据
      * @return int 注册后的用户ID
-     * @throws AppException
+     * @throws Exception
      */
-    public function onOAuthRegister(Field $field);
+    public function onOAuthRegister(Field $field) : int;
     
     
     /**
-     * 执行OAuth更新账户，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
-     * @param int   $userId 会员ID
-     * @param Field $field 更新的数据
-     * @throws AppException
+     * 执行OAuth更新账户，注意内部无需启用事物
+     * @param MemberOauthInfo $oauthInfo 绑定的记录数据
+     * @param Field           $field 更新的数据
+     * @throws Exception
      */
-    public function onOAuthUpdate($userId, Field $field);
+    public function onOAuthUpdate(MemberOauthInfo $oauthInfo, Field $field);
     
     
     /**
-     * 执行OAuth登录，注意内部无需启用事物，但是业务流程中需要加锁的依然要加锁
-     * @param int       $userId 会员ID
-     * @param OAuthInfo $api 三方登录数据
-     * @param array     $info 绑定的记录数据
-     * @return array|false 返回false代表必须执行手动数据填充，如：未注册手机号；返回数组则认为是会员数据
-     * @throws AppException
+     * 执行OAuth登录，注意内部无需启用事物
+     * 需要用户完善数据，如绑定手机号，则可以通过抛出自定义异常解决
+     * @param MemberOauthInfo $oauthInfo 绑定的记录数据
+     * @param OAuthInfo       $apiInfo 三方登录数据
+     * @return Field 返回信息由用户模型自定义
+     * @throws Exception
      */
-    public function onOAuthLogin($userId, OAuthInfo $api, array $info);
+    public function onOAuthLogin(MemberOauthInfo $oauthInfo, OAuthInfo $apiInfo) : Field;
 }
