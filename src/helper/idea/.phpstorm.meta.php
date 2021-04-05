@@ -47,14 +47,18 @@ namespace PHPSTORM_META {
     expectedArguments(\BusyPHP\oauth\model\MemberOauth::checkBindByOpenid(), 1, argumentsSet('oauth_type'));
     
     expectedArguments(\BusyPHP\oauth\model\MemberOauth::getInfoByUserId(), 2, argumentsSet('oauth_company'));
+    expectedArguments(\BusyPHP\oauth\model\MemberOauth::checkBindByUserId(), 2, argumentsSet('oauth_company'));
     
     expectedArguments(\BusyPHP\oauth\model\MemberOauth::getInfoByUnionId(), 1, argumentsSet('oauth_company'));
     expectedArguments(\BusyPHP\oauth\model\MemberOauth::checkBindByUnionId(), 1, argumentsSet('oauth_company'));
     
     
     expectedReturnValues(\BusyPHP\oauth\interfaces\OAuthInfo::getType(), argumentsSet('oauth_type'));
+    expectedReturnValues(\BusyPHP\oauth\interfaces\OAuth::getType(), argumentsSet('oauth_type'));
     expectedReturnValues(\BusyPHP\oauth\model\info\MemberOauthInfo::getType(), argumentsSet('oauth_type'));
+   
     expectedReturnValues(\BusyPHP\oauth\interfaces\OAuthInfo::getUnionType(), argumentsSet('oauth_company'));
-    expectedReturnValues(\BusyPHP\oauth\model\info\MemberOauthInfo::getUnionType(), argumentsSet('oauth_type'));
+    expectedReturnValues(\BusyPHP\oauth\interfaces\OAuth::getUnionType(), argumentsSet('oauth_company'));
+    expectedReturnValues(\BusyPHP\oauth\model\info\MemberOauthInfo::getUnionType(), argumentsSet('oauth_company'));
     
 }
