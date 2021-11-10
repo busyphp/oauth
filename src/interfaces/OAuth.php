@@ -5,8 +5,8 @@ namespace BusyPHP\oauth\interfaces;
 /**
  * OAuth2.0接口类，所有的OAuth接口都需要集成该接口
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2020/7/8 下午11:14 上午 OAuth.php $
+ * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午11:11 OAuth.php $
  */
 interface OAuth
 {

@@ -5,8 +5,8 @@ namespace BusyPHP\oauth\interfaces;
 /**
  * APP授权登录基本接口
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2020/7/9 下午7:45 下午 OAuthAPP.php $
+ * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午11:11 OAuthApp.php $
  */
 abstract class OAuthApp implements OAuth
 {

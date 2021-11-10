@@ -7,8 +7,8 @@ use BusyPHP\exception\ParamInvalidException;
 /**
  * OAuth用户信息容器
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2020/10/8 下午12:43 下午 OAuthInfo.php $
+ * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午11:12 OAuthInfo.php $
  */
 class OAuthInfo
 {
