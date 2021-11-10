@@ -1,6 +1,6 @@
 <?php
 
-namespace BusyPHP\oauth;
+namespace BusyPHP\oauth\defines;
 
 /**
  * 三方登录类型
