@@ -238,9 +238,9 @@ class MemberOauth extends Model
             // 没有绑定，两种情况
             // 1. 用户未注册过，则肯定没有绑定
             // 2. 用户已注册过，但是没有绑定任何记录
-            if (false === $info) {
+            if (!$info) {
                 // 执行查重回调
-                $userId = $callback->onCheckRegisterRepeat($oauth);
+                $userId = $callback->onCheckRegister($oauth);
                 
                 // 代表用户已注册，则直接为其绑定
                 if ($userId > 0) {
@@ -252,12 +252,6 @@ class MemberOauth extends Model
                     }
                     
                     $info = $this->bindByOAuthAndUserId($oauth, $userId);
-                }
-            } else {
-                // 有数据则更新
-                $field = $callback->onGetUpdateField($info);
-                if ($field->getDBData()) {
-                    $memberModel->onOAuthUpdate($info, $field);
                 }
             }
             
