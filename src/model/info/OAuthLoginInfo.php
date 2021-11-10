@@ -7,8 +7,8 @@ use BusyPHP\model\Field;
 /**
  * OAuth登录返回信息结构
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2021/4/5 下午12:41 下午 OAuthLoginInfo.php $
+ * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午10:52 OAuthLoginInfo.php $
  */
 class OAuthLoginInfo
 {

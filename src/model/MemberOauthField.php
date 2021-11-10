@@ -2,30 +2,31 @@
 
 namespace BusyPHP\oauth\model;
 
+use BusyPHP\model\Entity;
 use BusyPHP\model\Field;
 
 /**
  * 三方登录字段
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2019 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2020/7/9 下午2:53 下午 MemberOauthField.php $
- * @method static mixed id($op = null, $value = null) ID
- * @method static mixed userId($op = null, $value = null) 会员ID
- * @method static mixed type($op = null, $value = null) 登录类型
- * @method static mixed unionType($op = null, $value = null) 厂商类型
- * @method static mixed openid($op = null, $value = null) openid
- * @method static mixed unionid($op = null, $value = null) 同登录类型唯一值
- * @method static mixed createTime($op = null, $value = null) 绑定时间
- * @method static mixed updateTime($op = null, $value = null) 更新时间
- * @method static mixed loginTotal($op = null, $value = null) 登录次数
- * @method static mixed loginIp($op = null, $value = null) 本次登录IP
- * @method static mixed lastIp($op = null, $value = null) 上次登录IP
- * @method static mixed loginTime($op = null, $value = null) 本次登录时间
- * @method static mixed lastTime($op = null, $value = null) 上次登录时间
- * @method static mixed nickname($op = null, $value = null) 昵称
- * @method static mixed avatar($op = null, $value = null) 头像
- * @method static mixed sex($op = null, $value = null) 性别
- * @method static mixed userInfo($op = null, $value = null) 登录数据
+ * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午10:51 MemberOauthField.php $
+ * @method static Entity id($op = null, $value = null) ID
+ * @method static Entity userId($op = null, $value = null) 会员ID
+ * @method static Entity type($op = null, $value = null) 登录类型
+ * @method static Entity unionType($op = null, $value = null) 厂商类型
+ * @method static Entity openid($op = null, $value = null) openid
+ * @method static Entity unionid($op = null, $value = null) 同登录类型唯一值
+ * @method static Entity createTime($op = null, $value = null) 绑定时间
+ * @method static Entity updateTime($op = null, $value = null) 更新时间
+ * @method static Entity loginTotal($op = null, $value = null) 登录次数
+ * @method static Entity loginIp($op = null, $value = null) 本次登录IP
+ * @method static Entity lastIp($op = null, $value = null) 上次登录IP
+ * @method static Entity loginTime($op = null, $value = null) 本次登录时间
+ * @method static Entity lastTime($op = null, $value = null) 上次登录时间
+ * @method static Entity nickname($op = null, $value = null) 昵称
+ * @method static Entity avatar($op = null, $value = null) 头像
+ * @method static Entity sex($op = null, $value = null) 性别
+ * @method static Entity userInfo($op = null, $value = null) 登录数据
  */
 class MemberOauthField extends Field
 {
