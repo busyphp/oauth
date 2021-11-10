@@ -1,17 +1,22 @@
 {
 	"name"        : "busyphp/oauth",
 	"type"        : "library",
-	"description" : "",
+	"description" : "用于BusyPHP进行三方登录的基本组件，支持目前主流的三方登录",
+	"homepage"    : "http://www.harter.cn/?form=BusyPHP&plugin=busyphp/oauth",
+	"keywords"    : [
+		"OAuth2.0",
+		"三方登录"
+	],
 	"authors"     : [
 		{
 			"name"  : "busy^life",
 			"email" : "busy.life@qq.com"
 		}
 	],
-	"license"     : "Apache-2.0",
+	"license"     : "CC-BY-NC-4.0",
 	"require"     : {
 		"php"             : ">=7.1.0",
-		"busyphp/busyphp" : "^3.0.9",
+		"busyphp/busyphp" : "^6.0",
 		"ext-json"        : "*"
 	},
 	"require-dev" : {
@@ -24,6 +29,18 @@
 	},
 	"extra"       : {
 		"busyphp" : {
+			"manager"  : {
+				"name" : "三方登录模块",
+				"class": "BusyPHP\\oauth\\app\\controller\\ManagerController",
+				"install": {
+					"install_operate"   : {
+						"request_confirm" : "确认要安装 <code>__package__</code> 吗？<div class=text-gray>注意：安装会覆盖数据库中的 <code>*_member_oauth</code> 表</div>"
+					},
+					"uninstall_operate" : {
+						"request_confirm" : "确认要卸载 <code>__package__</code> 吗？<div class=text-gray>注意：卸载会删除数据库中的 <code>*_member_oauth</code> 表</div>"
+					}
+				}
+			},
 			"services" : [
 				"BusyPHP\\oauth\\Service"
 			],
