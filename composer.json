@@ -30,9 +30,9 @@
 	"extra"       : {
 		"busyphp" : {
 			"manager"  : {
-				"name" : "三方登录模块",
-				"class": "BusyPHP\\oauth\\app\\controller\\ManagerController",
-				"install": {
+				"name"    : "三方登录模块",
+				"class"   : "BusyPHP\\oauth\\app\\controller\\ManagerController",
+				"install" : {
 					"install_operate"   : {
 						"request_confirm" : "确认要安装 <code>__package__</code> 吗？<div class=text-gray>注意：安装会覆盖数据库中的 <code>*_member_oauth</code> 表</div>"
 					},
@@ -45,7 +45,7 @@
 				"BusyPHP\\oauth\\Service"
 			],
 			"config"   : {
-				"oauth" : "src/config.php"
+				"oauth" : "src/config/config.php"
 			}
 		}
 	},
