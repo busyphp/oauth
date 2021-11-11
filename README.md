@@ -55,14 +55,14 @@ return [
 use BusyPHP\Controller;
 use BusyPHP\model\Field;
 use BusyPHP\oauth\interfaces\OAuth;
-use BusyPHP\oauth\interfaces\OnOAuthBindOrRegisterCallback;
+use BusyPHP\oauth\interfaces\OAuthCallback;
 use BusyPHP\oauth\model\MemberOauth;
 
 class Index extends Controller
 {
     public function index()
     {
-        $loginInfo = MemberOauth::init()->login(null, new class implements OnOAuthBindOrRegisterCallback {
+        $loginInfo = MemberOauth::init()->login(null, new class implements OAuthCallback {
             /**
              * 执行注册校验
              * @param OAuth $oauth
@@ -81,7 +81,7 @@ class Index extends Controller
              * @param OAuth $oauth
              * @return Field
              */
-            public function onGetRegisterField(OAuth $oauth) : Field
+            public function onGetRegisterData(OAuth $oauth) : Field
             {
                 // 获取到三方登录数据
                 $authInfo = $oauth->onGetInfo();

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace BusyPHP\oauth\model\info;
 
@@ -23,7 +24,7 @@ class MemberOauthInfo extends MemberOauthField
     
     public function onParseAfter()
     {
-        $this->decodeUserInfo = json_decode($this->userInfo, true);
+        $this->decodeUserInfo = json_decode((string) $this->userInfo, true) ?: [];
         $this->type           = (int) $this->type;
         $this->unionType      = (int) $this->unionType;
     }

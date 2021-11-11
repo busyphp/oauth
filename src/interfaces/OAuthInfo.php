@@ -1,8 +1,11 @@
 <?php
+declare(strict_types = 1);
 
 namespace BusyPHP\oauth\interfaces;
 
-use BusyPHP\exception\ParamInvalidException;
+use BusyPHP\Model;
+use BusyPHP\model\ObjectOption;
+use RangeException;
 
 /**
  * OAuth用户信息容器
@@ -10,38 +13,64 @@ use BusyPHP\exception\ParamInvalidException;
  * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
  * @version $Id: 2021/11/10 下午11:12 OAuthInfo.php $
  */
-class OAuthInfo
+class OAuthInfo extends ObjectOption
 {
-    /**
-     * 未知
-     */
+    /** @var int 未知 */
     const SEX_UNKNOWN = 0;
     
-    /**
-     * 男
-     */
+    /** @var int 男 */
     const SEX_MAN = 1;
     
-    /**
-     * 女
-     */
+    /** @var int 女 */
     const SEX_WOMAN = 2;
     
-    private $openId    = '';
+    /**
+     * openid
+     * @var string
+     */
+    private $openId = '';
     
-    private $unionId   = '';
+    /**
+     * 厂商联合ID
+     * @var string
+     */
+    private $unionId = '';
     
+    /**
+     * 厂商类型
+     * @var int
+     */
     private $unionType = 0;
     
-    private $nickname  = '';
+    /**
+     * 昵称
+     * @var string
+     */
+    private $nickname = '';
     
-    private $avatar    = '';
+    /**
+     * 头像
+     * @var string
+     */
+    private $avatar = '';
     
-    private $sex       = self::SEX_UNKNOWN;
+    /**
+     * 性别
+     * @var int
+     */
+    private $sex = self::SEX_UNKNOWN;
     
-    private $type      = 0;
+    /**
+     * 登录类型
+     * @var int
+     */
+    private $type = 0;
     
-    private $userInfo  = [];
+    /**
+     * 用户信息
+     * @var array
+     */
+    private $userInfo = [];
     
     
     /**
@@ -62,7 +91,7 @@ class OAuthInfo
      * @param array $userInfo
      * @return $this
      */
-    public function setUserInfo($userInfo) : self
+    public function setUserInfo(array $userInfo) : self
     {
         $this->userInfo = $userInfo;
         
@@ -75,7 +104,7 @@ class OAuthInfo
      * @param string $openId
      * @return $this
      */
-    public function setOpenId($openId) : self
+    public function setOpenId(string $openId) : self
     {
         $this->openId = trim($openId);
         
@@ -88,7 +117,7 @@ class OAuthInfo
      * @param string $unionId
      * @return $this
      */
-    public function setUnionId($unionId) : self
+    public function setUnionId(string $unionId) : self
     {
         $this->unionId = trim($unionId);
         
@@ -101,7 +130,7 @@ class OAuthInfo
      * @param string $avatar
      * @return $this
      */
-    public function setAvatar($avatar) : self
+    public function setAvatar(string $avatar) : self
     {
         $this->avatar = trim($avatar);
         
@@ -114,7 +143,7 @@ class OAuthInfo
      * @param string $nickname
      * @return $this
      */
-    public function setNickname($nickname) : self
+    public function setNickname(string $nickname) : self
     {
         $this->nickname = trim($nickname);
         
@@ -126,13 +155,12 @@ class OAuthInfo
      * 设置性别
      * @param int $sex
      * @return $this
-     * @throws ParamInvalidException
      */
-    public function setSex($sex = self::SEX_UNKNOWN) : self
+    public function setSex(int $sex = self::SEX_UNKNOWN) : self
     {
         $this->sex = intval($sex);
         if (!in_array($this->sex, [self::SEX_MAN, self::SEX_WOMAN, self::SEX_UNKNOWN])) {
-            throw new ParamInvalidException('sex');
+            throw new RangeException('Gender is not allowed');
         }
         
         return $this;
@@ -144,9 +172,9 @@ class OAuthInfo
      * @param int $type
      * @return $this
      */
-    public function setType($type) : self
+    public function setType(int $type) : self
     {
-        $this->type = intval($type);
+        $this->type = $type;
         
         return $this;
     }
@@ -157,9 +185,9 @@ class OAuthInfo
      * @param int $unionType
      * @return $this
      */
-    public function setUnionType($unionType) : self
+    public function setUnionType(int $unionType) : self
     {
-        $this->unionType = intval($unionType);
+        $this->unionType = $unionType;
         
         return $this;
     }
@@ -167,11 +195,12 @@ class OAuthInfo
     
     /**
      * 解析性别
-     * @param string|int $sex
+     * @param mixed $sex
      * @return int
      */
     public static function parseSex($sex) : int
     {
+        $sex = trim((string) $sex);
         if (is_numeric($sex)) {
             switch (intval($sex)) {
                 case 1:
@@ -184,7 +213,6 @@ class OAuthInfo
                     return self::SEX_UNKNOWN;
             }
         } else {
-            $sex = trim($sex);
             if (false !== strpos($sex, '男')) {
                 return self::SEX_MAN;
             } elseif (false !== strpos($sex, '女')) {
@@ -200,7 +228,7 @@ class OAuthInfo
      * 获取 openid
      * @return string
      */
-    public function getOpenId()
+    public function getOpenId() : string
     {
         return $this->openId;
     }
@@ -210,7 +238,7 @@ class OAuthInfo
      * 获取 unionid
      * @return string
      */
-    public function getUnionId()
+    public function getUnionId() : string
     {
         return $this->unionId;
     }
@@ -220,7 +248,7 @@ class OAuthInfo
      * 获取厂商类型
      * @return int
      */
-    public function getUnionType()
+    public function getUnionType() : int
     {
         return $this->unionType;
     }
@@ -230,7 +258,7 @@ class OAuthInfo
      * 获取用户昵称
      * @return string
      */
-    public function getNickname()
+    public function getNickname() : string
     {
         return $this->nickname;
     }
@@ -240,7 +268,7 @@ class OAuthInfo
      * 获取头像
      * @return string
      */
-    public function getAvatar()
+    public function getAvatar() : string
     {
         return $this->avatar;
     }
@@ -250,7 +278,7 @@ class OAuthInfo
      * 获取性别，1男 2女
      * @return int
      */
-    public function getSex()
+    public function getSex() : int
     {
         return $this->sex;
     }
@@ -260,7 +288,7 @@ class OAuthInfo
      * 获取登录类型
      * @return int
      */
-    public function getType()
+    public function getType() : int
     {
         return $this->type;
     }
@@ -270,8 +298,21 @@ class OAuthInfo
      * 获取三方数据
      * @return array
      */
-    public function getUserInfo()
+    public function getUserInfo() : array
     {
         return $this->userInfo;
+    }
+    
+    
+    /**
+     * 获取性别集合
+     * @param int|null $val
+     * @return array|string
+     */
+    public static function getSexs(?int $val = null)
+    {
+        return Model::parseVars(Model::parseConst(self::class, 'SEX_', [], function($item) {
+            return $item['name'];
+        }), $val);
     }
 }

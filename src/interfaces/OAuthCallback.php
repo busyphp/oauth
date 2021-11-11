@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace BusyPHP\oauth\interfaces;
 
@@ -8,9 +9,9 @@ use BusyPHP\model\Field;
  * 执行OAuth绑定或注册回调
  * @author busy^life <busy.life@qq.com>
  * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2021/11/10 下午11:11 OnOAuthBindOrRegisterCallback.php $
+ * @version $Id: 2021/11/10 下午11:11 OAuthCallback.php $
  */
-interface OnOAuthBindOrRegisterCallback
+interface OAuthCallback
 {
     /**
      * 执行注册校验
@@ -21,9 +22,9 @@ interface OnOAuthBindOrRegisterCallback
     
     
     /**
-     * 返回要注册的用户数据
+     * 获取注册的用户数据
      * @param OAuth $oauth
      * @return Field
      */
-    public function onGetRegisterField(OAuth $oauth) : Field;
+    public function onGetRegisterData(OAuth $oauth) : Field;
 }

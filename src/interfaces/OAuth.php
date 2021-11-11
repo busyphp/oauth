@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace BusyPHP\oauth\interfaces;
 
@@ -14,35 +15,35 @@ interface OAuth
      * 获取登录类型
      * @return int
      */
-    public function getType();
+    public function getType() : int;
     
     
     /**
      * 获取厂商类型
      * @return int
      */
-    public function getUnionType();
+    public function getUnionType() : int;
     
     
     /**
      * 执行申请授权
      * @param string $redirectUri 回调地址
      */
-    public function onApplyAuth($redirectUri);
+    public function onApplyAuth(string $redirectUri);
     
     
     /**
      * 换取票据
      * @return string
      */
-    public function onGetAccessToken();
+    public function onGetAccessToken() : string;
     
     
     /**
      * 获取用户信息，该方法可能会多次触发，请自行处理重复处理锁
      * @return OAuthInfo
      */
-    public function onGetInfo();
+    public function onGetInfo() : OAuthInfo;
     
     
     /**

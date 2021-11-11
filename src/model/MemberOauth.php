@@ -12,7 +12,7 @@ use BusyPHP\oauth\interfaces\OAuth;
 use BusyPHP\oauth\interfaces\OAuthApp;
 use BusyPHP\oauth\interfaces\OAuthAppData;
 use BusyPHP\oauth\interfaces\OAuthModel;
-use BusyPHP\oauth\interfaces\OnOAuthBindOrRegisterCallback;
+use BusyPHP\oauth\interfaces\OAuthCallback;
 use BusyPHP\oauth\model\info\MemberOauthInfo;
 use BusyPHP\oauth\model\info\OAuthLoginInfo;
 use RuntimeException;
@@ -217,13 +217,13 @@ class MemberOauth extends Model
     
     /**
      * 通过OAuth数据和注册数据进行绑定
-     * @param OAuth                         $oauth 三方登录接口
-     * @param OnOAuthBindOrRegisterCallback $callback 回调
-     * @param bool                          $disabledTrans 是否禁用事物
+     * @param OAuth         $oauth 三方登录接口
+     * @param OAuthCallback $callback 回调
+     * @param bool          $disabledTrans 是否禁用事物
      * @return MemberOauthInfo
      * @throws Throwable
      */
-    public function bindByOAuthOrRegister(OAuth $oauth, OnOAuthBindOrRegisterCallback $callback, $disabledTrans = false) : MemberOauthInfo
+    public function bindByOAuthOrRegister(OAuth $oauth, OAuthCallback $callback, $disabledTrans = false) : MemberOauthInfo
     {
         // 执行绑定
         // 1. 用户已经在同厂商不通客户端登录，如：已经在公众号绑定，没有在app上绑定
@@ -246,7 +246,7 @@ class MemberOauth extends Model
                 if ($userId > 0) {
                     $info = $this->bindByOAuthAndUserId($oauth, $userId);
                 } else {
-                    $userId = $memberModel->onOAuthRegister($callback->onGetRegisterField($oauth));
+                    $userId = $memberModel->onOAuthRegister($callback->onGetRegisterData($oauth));
                     if ($userId < 1) {
                         throw new ParamInvalidException('onGetRegisterField方法必须返回有效的会员ID');
                     }
@@ -268,12 +268,12 @@ class MemberOauth extends Model
     
     /**
      * 执行登录
-     * @param OAuth                         $oauth
-     * @param OnOAuthBindOrRegisterCallback $callback
+     * @param OAuth         $oauth
+     * @param OAuthCallback $callback
      * @return OAuthLoginInfo
      * @throws Throwable
      */
-    public function login(OAuth $oauth, OnOAuthBindOrRegisterCallback $callback) : OAuthLoginInfo
+    public function login(OAuth $oauth, OAuthCallback $callback) : OAuthLoginInfo
     {
         $apiInfo = $oauth->onGetInfo();
         if (!$apiInfo->getOpenId() && !$apiInfo->getUnionId()) {
