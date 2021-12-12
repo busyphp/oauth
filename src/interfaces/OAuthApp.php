@@ -32,7 +32,7 @@ abstract class OAuthApp implements OAuth
      * 执行申请授权
      * @param string $redirectUri 回调地址
      */
-    public function onApplyAuth($redirectUri)
+    public function onApplyAuth(string $redirectUri)
     {
     }
     
@@ -41,7 +41,7 @@ abstract class OAuthApp implements OAuth
      * 换取票据
      * @return string
      */
-    public function onGetAccessToken()
+    public function onGetAccessToken() : string
     {
         return '';
     }
