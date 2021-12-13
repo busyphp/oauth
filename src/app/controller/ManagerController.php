@@ -26,8 +26,9 @@ class ManagerController extends PluginManager
   `user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '会员ID',
   `type` SMALLINT(2) NOT NULL DEFAULT '0' COMMENT '登录类型',
   `union_type` SMALLINT(2) NOT NULL DEFAULT '0' COMMENT '厂商类型',
-  `openid` VARCHAR(60) NOT NULL DEFAULT '' COMMENT 'openid',
-  `unionid` VARCHAR(60) NOT NULL DEFAULT '' COMMENT '同登录类型唯一值',
+  `openid` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'openid',
+  `unionid` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '同登录类型唯一值',
+  `app_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '三方APPID',
   `create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '绑定时间',
   `update_time` INT(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
   `login_total` INT(11) NOT NULL DEFAULT '0' COMMENT '登录次数',
@@ -44,6 +45,7 @@ class ManagerController extends PluginManager
    KEY `type` (`type`),
    KEY `openid` (`openid`),
    KEY `unionid` (`unionid`),
+   KEY `app_id` (`app_id`),
    KEY `union_type` (`union_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='OAuth登录'",
     ];

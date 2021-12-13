@@ -17,6 +17,7 @@ use BusyPHP\model\Field;
  * @method static Entity unionType($op = null, $value = null) 厂商类型
  * @method static Entity openid($op = null, $value = null) openid
  * @method static Entity unionid($op = null, $value = null) 同登录类型唯一值
+ * @method static Entity appId($op = null, $value = null) 三方APPID
  * @method static Entity createTime($op = null, $value = null) 绑定时间
  * @method static Entity updateTime($op = null, $value = null) 更新时间
  * @method static Entity loginTotal($op = null, $value = null) 登录次数
@@ -66,6 +67,12 @@ class MemberOauthField extends Field
      * @var string
      */
     public $unionid;
+    
+    /**
+     * 三方APPID
+     * @var string
+     */
+    public $appId;
     
     /**
      * 绑定时间
