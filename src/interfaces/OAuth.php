@@ -26,6 +26,13 @@ interface OAuth
     
     
     /**
+     * 获取三方APPID
+     * @return string
+     */
+    public function getAppId() : string;
+    
+    
+    /**
      * 执行申请授权
      * @param string $redirectUri 回调地址
      */
