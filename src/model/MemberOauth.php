@@ -96,35 +96,6 @@ class MemberOauth extends Model
     
     
     /**
-     * 获取Oauth接口类名
-     * @param int $type 登录方式
-     * @return string
-     */
-    protected function getOAuthClassName(int $type) : string
-    {
-        $types = $this->getOauthConfig('types', []);
-        if (!$types || !isset($types[$type])) {
-            throw new RuntimeException("不支持该登录方式");
-        }
-        
-        $class = $types[$type]['class'];
-        if (!$class) {
-            throw new RuntimeException('未绑定登录接口类');
-        }
-        
-        if (!class_exists($class)) {
-            throw new ClassNotFoundException($class);
-        }
-        
-        if (!is_subclass_of($class, OAuth::class)) {
-            throw new ClassNotImplementsException($class, OAuth::class);
-        }
-        
-        return $class;
-    }
-    
-    
-    /**
      * 获取会员关联模型对象
      * @return OAuthModel
      */
@@ -146,15 +117,28 @@ class MemberOauth extends Model
     
     /**
      * 获取APP登录OAuth对象
-     * @param int          $type 登录方式
-     * @param OAuthAppData $data 登录数据
+     * @param int    $type 登录方式
+     * @param mixed  $data 三方登录数据
+     * @param string $accountId 三方账户ID，用于区分同一种登录方式，不同账户
      * @return OAuthApp
      */
-    public function getOAuthApp(int $type, OAuthAppData $data) : OAuthApp
+    public function getOAuthApp(int $type, $data = null, string $accountId = '') : OAuthApp
     {
-        $class = $this->getOAuthClassName($type);
+        $types = $this->getOauthConfig('types', []);
+        if (!$types || !isset($types[$type])) {
+            throw new RuntimeException("不支持该登录方式");
+        }
         
-        return new $class($data);
+        $impl = $types[$type]['class'] ?? '';
+        if (!$impl) {
+            throw new RuntimeException('未绑定登录接口类');
+        }
+        
+        if (!is_subclass_of($impl, OAuth::class)) {
+            throw new ClassNotImplementsException($impl, OAuth::class);
+        }
+        
+        return Container::getInstance()->make($impl, [$data, $accountId]);
     }
     
     

@@ -13,18 +13,26 @@ abstract class OAuthApp implements OAuth
 {
     /**
      * 数据
-     * @var OAuthAppData
+     * @var mixed
      */
     protected $data;
+    
+    /**
+     * 三方账户ID
+     * @var string
+     */
+    private $accountId;
     
     
     /**
      * OAuthAPP constructor.
-     * @param OAuthAppData $data 三方给的数据
+     * @param mixed  $data 三方登录数据
+     * @param string $accountId 三方账户ID，用于区分同一种登录方式，不同账户
      */
-    public function __construct(OAuthAppData $data)
+    public function __construct($data = null, string $accountId = '')
     {
-        $this->data = $data;
+        $this->data      = $data;
+        $this->accountId = $accountId;
     }
     
     
