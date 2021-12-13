@@ -27,4 +27,12 @@ interface OAuthCallback
      * @return Field
      */
     public function onGetRegisterData(OAuth $oauth) : Field;
+    
+    
+    /**
+     * 获取更新的用户数据
+     * @param OAuth $oauth
+     * @return Field|null
+     */
+    public function onGetUpdateData(OAuth $oauth) : ?Field;
 }

@@ -281,7 +281,7 @@ class MemberOauth extends Model
             }
             
             // 执行会员登录
-            $userInfo = $memberModal->onOAuthLogin($info, $oauth);
+            $userInfo = $memberModal->onOAuthLogin($info, $oauth, $callback->onGetUpdateData($oauth));
             
             // 更新绑定记录登录信息
             $save             = MemberOauthField::init();

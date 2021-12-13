@@ -32,9 +32,9 @@ interface OAuthModel
      * - 注意: 内部无需启用事物
      * - 提示: 需要用户完善数据，如绑定手机号，则可以通过抛出自定义异常解决
      * @param MemberOauthInfo $oauthInfo 绑定的记录数据
-     * @param OAuth           $oauthApi 三方登录接口
+     * @param OAuth           $oauth 三方登录接口
+     * @param Field|null      $updateData 更新的用户数据
      * @return Field 返回信息由用户模型自定义
-     * @throws Throwable
      */
-    public function onOAuthLogin(MemberOauthInfo $oauthInfo, OAuth $oauthApi) : Field;
+    public function onOAuthLogin(MemberOauthInfo $oauthInfo, OAuth $oauth, ?Field $updateData) : Field;
 }
