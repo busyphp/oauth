@@ -1,10 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace BusyPHP\oauth\model\info;
+namespace BusyPHP\oauth\model;
 
 use BusyPHP\model\Entity;
-use BusyPHP\oauth\model\MemberOauthField;
 
 /**
  * OAuth模型信息结构

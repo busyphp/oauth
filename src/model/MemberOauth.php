@@ -13,9 +13,8 @@ use BusyPHP\oauth\interfaces\OAuthApp;
 use BusyPHP\oauth\interfaces\OAuthAppData;
 use BusyPHP\oauth\interfaces\OAuthModel;
 use BusyPHP\oauth\interfaces\OAuthCallback;
-use BusyPHP\oauth\model\info\MemberOauthInfo;
-use BusyPHP\oauth\model\info\OAuthLoginInfo;
 use RuntimeException;
+use think\Container;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use Throwable;
@@ -59,7 +58,7 @@ class MemberOauth extends Model
      * @return int|false 返回false代表已被其他人绑定，返回ini代表绑定成功的记录ID
      * @throws DbException
      */
-    protected function insertData(MemberOauthField $insert)
+    protected function createOAuth(MemberOauthField $insert)
     {
         if ($insert->userId < 1) {
             throw new ParamInvalidException('user_id');
@@ -69,12 +68,16 @@ class MemberOauth extends Model
             throw new ParamInvalidException('openid,unionid');
         }
         
-        if ($insert->type < 1 || $insert->unionType < 1) {
+        if ($insert->type < 1 || $insert->unionType < 1 || !$insert->appId) {
             throw new ParamInvalidException('type, union_type');
         }
         
         // 检测会员是否绑定过
-        if ($info = $this->getInfoByUserId($insert->userId, $insert->type, $insert->unionType)) {
+        if ($info = $this->whereEntity(MemberOauthField::userId($insert->userId))
+            ->whereEntity(MemberOauthField::type($insert->type))
+            ->whereEntity(MemberOauthField::unionType($insert->unionType))
+            ->whereEntity(MemberOauthField::appId($insert->appId))
+            ->findInfo()) {
             // openid一致则认为是自己
             // 否则已被别人绑定
             if ($info->openid == $insert->openid) {
@@ -127,20 +130,17 @@ class MemberOauth extends Model
      */
     protected function getOAuthModel() : OAuthModel
     {
-        $memberClass = $this->getOauthConfig('member', '');
-        if (!$memberClass) {
+        $impl = $this->getOauthConfig('member', '');
+        if (!$impl) {
             throw new RuntimeException('未关联会员模型');
         }
         
-        if (!class_exists($memberClass)) {
-            throw new ClassNotFoundException($memberClass);
+        $model = Container::getInstance()->make($impl, [], true);
+        if (!$model instanceof OAuthModel) {
+            throw new ClassNotImplementsException($impl, OAuthModel::class);
         }
         
-        if (!is_subclass_of($memberClass, OAuthModel::class)) {
-            throw new ClassNotImplementsException($memberClass, OAuthModel::class);
-        }
-        
-        return call_user_func([$memberClass, 'init']);
+        return $model;
     }
     
     
@@ -169,7 +169,7 @@ class MemberOauth extends Model
     protected function bindByOAuthAndUserId(OAuth $oauth, $userId) : MemberOauthInfo
     {
         if ($userId < 1) {
-            throw new ParamInvalidException('user_id');
+            throw new ParamInvalidException('$userId');
         }
         
         $oauthInfo         = $oauth->onGetInfo();
@@ -179,12 +179,13 @@ class MemberOauth extends Model
         $insert->unionType = $oauthInfo->getUnionType();
         $insert->unionid   = $oauthInfo->getUnionId();
         $insert->openid    = $oauthInfo->getOpenId();
+        $insert->appId     = $oauthInfo->getAppId();
         $insert->nickname  = $oauthInfo->getNickname();
         $insert->sex       = $oauthInfo->getSex();
         $insert->avatar    = $oauthInfo->getAvatar();
         $insert->userInfo  = json_encode($oauthInfo->getUserInfo());
         
-        if (false === $insertId = $this->insertData($insert)) {
+        if (false === $insertId = $this->createOAuth($insert)) {
             throw new VerifyException('该账户已被他人绑定', 'repeat');
         }
         
@@ -202,7 +203,7 @@ class MemberOauth extends Model
     protected function bindByOAuth(OAuth $oauth) : ?MemberOauthInfo
     {
         $oauthInfo = $oauth->onGetInfo();
-        if ($info = $this->getInfoByOpenId($oauthInfo->getOpenId(), $oauthInfo->getType())) {
+        if ($info = $this->getInfoByOpenId($oauthInfo->getOpenId(), $oauthInfo->getType(), $oauthInfo->getAppId())) {
             return $info;
         }
         
@@ -248,7 +249,7 @@ class MemberOauth extends Model
                 } else {
                     $userId = $memberModel->onOAuthRegister($callback->onGetRegisterData($oauth));
                     if ($userId < 1) {
-                        throw new ParamInvalidException('onGetRegisterField方法必须返回有效的会员ID');
+                        throw new RuntimeException('onGetRegisterField方法必须返回有效的会员ID');
                     }
                     
                     $info = $this->bindByOAuthAndUserId($oauth, $userId);
@@ -270,10 +271,10 @@ class MemberOauth extends Model
      * 执行登录
      * @param OAuth         $oauth
      * @param OAuthCallback $callback
-     * @return OAuthLoginInfo
+     * @return MemberOAuthLoginResult
      * @throws Throwable
      */
-    public function login(OAuth $oauth, OAuthCallback $callback) : OAuthLoginInfo
+    public function login(OAuth $oauth, OAuthCallback $callback) : MemberOAuthLoginResult
     {
         $apiInfo = $oauth->onGetInfo();
         if (!$apiInfo->getOpenId() && !$apiInfo->getUnionId()) {
@@ -287,7 +288,8 @@ class MemberOauth extends Model
         
         $this->startTrans();
         try {
-            $info = $this->lock(true)->getInfoByOpenId($apiInfo->getOpenId(), $apiInfo->getType());
+            $info = $this->lock(true)
+                ->getInfoByOpenId($apiInfo->getOpenId(), $apiInfo->getType(), $apiInfo->getAppId());
             
             // 绑定记录不存在则需要绑定
             if (!$info) {
@@ -322,7 +324,7 @@ class MemberOauth extends Model
             
             $this->commit();
             
-            $loginInfo            = new OAuthLoginInfo();
+            $loginInfo            = new MemberOAuthLoginResult();
             $loginInfo->oauthInfo = $info;
             $loginInfo->modelInfo = $userInfo;
             
@@ -337,16 +339,18 @@ class MemberOauth extends Model
     
     /**
      * 通过Openid获取绑定记录
-     * @param string $openid
+     * @param string $openid OPENID
      * @param int    $type 登录类型
+     * @param string $appId 三方APPID
      * @return MemberOauthInfo
      * @throws DataNotFoundException
      * @throws DbException
      */
-    public function getInfoByOpenId($openid, $type) : ?MemberOauthInfo
+    public function getInfoByOpenId(string $openid, int $type, string $appId) : ?MemberOauthInfo
     {
         return $this->whereEntity(MemberOauthField::openid(trim($openid)))
             ->whereEntity(MemberOauthField::type(intval($type)))
+            ->whereEntity(MemberOauthField::appId($appId))
             ->findInfo();
     }
     
@@ -363,24 +367,6 @@ class MemberOauth extends Model
     {
         return $this->whereEntity(MemberOauthField::unionid(trim($unionId)))
             ->whereEntity(MemberOauthField::unionType(intval($type)))
-            ->findInfo();
-    }
-    
-    
-    /**
-     * 通过会员ID获取绑定信息
-     * @param int $userId 会员ID
-     * @param int $type 登录类型
-     * @param int $unionType 绑定类型
-     * @return MemberOauthInfo|null
-     * @throws DataNotFoundException
-     * @throws DbException
-     */
-    public function getInfoByUserId($userId, int $type, int $unionType) : ?MemberOauthInfo
-    {
-        return $this->whereEntity(MemberOauthField::userId($userId))
-            ->whereEntity(MemberOauthField::type($type))
-            ->whereEntity(MemberOauthField::unionType($unionType))
             ->findInfo();
     }
 }

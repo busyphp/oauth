@@ -5,7 +5,7 @@ namespace BusyPHP\oauth\interfaces;
 
 use BusyPHP\Model;
 use BusyPHP\model\Field;
-use BusyPHP\oauth\model\info\MemberOauthInfo;
+use BusyPHP\oauth\model\MemberOauthInfo;
 use Throwable;
 
 /**
