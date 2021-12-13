@@ -167,7 +167,7 @@ class MemberOauth extends Model
         $insert->nickname  = $oauthInfo->getNickname();
         $insert->sex       = $oauthInfo->getSex();
         $insert->avatar    = $oauthInfo->getAvatar();
-        $insert->userInfo  = json_encode($oauthInfo->getUserInfo());
+        $insert->userInfo  = json_encode($oauthInfo->getUserInfo(), JSON_UNESCAPED_UNICODE);
         
         if (false === $insertId = $this->createOAuth($insert)) {
             throw new VerifyException('该账户已被他人绑定', 'repeat');
