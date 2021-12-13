@@ -224,7 +224,7 @@ class MemberOauth extends Model
      * @return MemberOauthInfo
      * @throws Throwable
      */
-    public function bindByOAuthOrRegister(OAuth $oauth, OAuthCallback $callback, $disabledTrans = false) : MemberOauthInfo
+    public function bindByOAuthOrRegister(OAuth $oauth, OAuthCallback $callback, bool $disabledTrans = false) : MemberOauthInfo
     {
         // 执行绑定
         // 1. 用户已经在同厂商不通客户端登录，如：已经在公众号绑定，没有在app上绑定
@@ -363,7 +363,7 @@ class MemberOauth extends Model
      * @throws DataNotFoundException
      * @throws DbException
      */
-    public function getInfoByUnionId($unionId, $type) : ?MemberOauthInfo
+    public function getInfoByUnionId(string $unionId, int $type) : ?MemberOauthInfo
     {
         return $this->whereEntity(MemberOauthField::unionid(trim($unionId)))
             ->whereEntity(MemberOauthField::unionType(intval($type)))
