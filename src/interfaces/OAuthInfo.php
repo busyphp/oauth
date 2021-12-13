@@ -72,6 +72,12 @@ class OAuthInfo extends ObjectOption
      */
     private $userInfo = [];
     
+    /**
+     * 三方APPID
+     * @var string
+     */
+    private $appId = '';
+    
     
     /**
      * OAuth_Info constructor.
@@ -82,6 +88,7 @@ class OAuthInfo extends ObjectOption
         if ($oauth != null) {
             $this->setType($oauth->getType());
             $this->setUnionType($oauth->getUnionType());
+            $this->setAppId($oauth->getAppId());
         }
     }
     
@@ -301,6 +308,29 @@ class OAuthInfo extends ObjectOption
     public function getUserInfo() : array
     {
         return $this->userInfo;
+    }
+    
+    
+    /**
+     * 设置三方APPID
+     * @param string $appId
+     * @return $this
+     */
+    public function setAppId(string $appId) : self
+    {
+        $this->appId = $appId;
+        
+        return $this;
+    }
+    
+    
+    /**
+     * 获取三方APPID
+     * @return string
+     */
+    public function getAppId() : string
+    {
+        return $this->appId;
     }
     
     
