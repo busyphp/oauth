@@ -12,7 +12,7 @@ composer require busyphp/oauth
 
 > 安装成功后在后台 > 开发模式 > 插件管理 进行数据表安装/卸载
 
-## 配置 `/config/extend/oauth.php`
+## 配置 `/config/busy-oauth.php`
 ```php
 return [
     // 会员模型类绑定，该模型必须集成 BusyPHP\oauth\interfaces\OAuthModel 接口
