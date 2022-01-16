@@ -291,7 +291,7 @@ class MemberOauth extends Model
             
             // 补齐unionId
             if ($apiInfo->getUnionId()) {
-                $info->unionid = $apiInfo->getUnionId();
+                $save->unionid = $apiInfo->getUnionId();
             }
             
             $this->whereEntity(MemberOauthField::id($info->id))->saveData($save);
