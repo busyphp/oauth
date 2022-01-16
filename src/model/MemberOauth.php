@@ -3,14 +3,12 @@
 namespace BusyPHP\oauth\model;
 
 use BusyPHP\App;
-use BusyPHP\exception\ClassNotFoundException;
 use BusyPHP\exception\ClassNotImplementsException;
 use BusyPHP\exception\ParamInvalidException;
 use BusyPHP\exception\VerifyException;
 use BusyPHP\Model;
 use BusyPHP\oauth\interfaces\OAuth;
 use BusyPHP\oauth\interfaces\OAuthApp;
-use BusyPHP\oauth\interfaces\OAuthAppData;
 use BusyPHP\oauth\interfaces\OAuthModel;
 use BusyPHP\oauth\interfaces\OAuthCallback;
 use RuntimeException;
@@ -27,6 +25,7 @@ use Throwable;
  * @method MemberOauthInfo getInfo($data, $notFoundMessage = null)
  * @method MemberOauthInfo findInfo($data = null, $notFoundMessage = null)
  * @method MemberOauthInfo[] selectList()
+ * @method MemberOauthInfo[] buildListWithField(array $values, $key = null, $field = null)
  */
 class MemberOauth extends Model
 {
@@ -41,14 +40,9 @@ class MemberOauth extends Model
      * @param mixed  $default 默认值
      * @return mixed
      */
-    public function getOauthConfig($name, $default = null)
+    public function getOauthConfig(string $name, $default = null)
     {
-        $app = App::getInstance();
-        if (!$app->config->get('oauth')) {
-            $app->config->load($app->getRootPath() . 'config' . DIRECTORY_SEPARATOR . 'extend' . DIRECTORY_SEPARATOR . 'oauth.php', 'oauth');
-        }
-        
-        return $app->config->get('oauth.' . $name, $default);
+        return App::getInstance()->config->get('busy-oauth' . ($name ? ".{$name}" : ''), $default);
     }
     
     
@@ -294,20 +288,16 @@ class MemberOauth extends Model
             $save->loginIp    = App::getInstance()->request->ip();
             $save->loginTime  = time();
             $save->loginTotal = $info->loginTotal + 1;
+            
+            // 补齐unionId
+            if ($apiInfo->getUnionId()) {
+                $info->unionid = $apiInfo->getUnionId();
+            }
+            
             $this->whereEntity(MemberOauthField::id($info->id))->saveData($save);
-            
-            $info->nickname   = $save->nickname;
-            $info->avatar     = $save->avatar;
-            $info->sex        = $save->sex;
-            $info->userInfo   = $save->userInfo;
-            $info->lastIp     = $save->lastIp;
-            $info->lastTime   = $save->lastTime;
-            $info->loginIp    = $save->loginIp;
-            $info->loginTime  = $save->loginTime;
-            $info->loginTotal = $save->loginTotal;
-            
             $this->commit();
             
+            $info                 = $this->getInfo($info->id);
             $loginInfo            = new MemberOAuthLoginResult();
             $loginInfo->oauthInfo = $info;
             $loginInfo->modelInfo = $userInfo;
