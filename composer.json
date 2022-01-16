@@ -28,6 +28,11 @@
 		}
 	},
 	"extra"       : {
+		"think"   : {
+			"config" : {
+				"busy-oauth" : "src/config/config.php"
+			}
+		},
 		"busyphp" : {
 			"manager"  : {
 				"name"    : "三方登录模块",
@@ -43,10 +48,7 @@
 			},
 			"services" : [
 				"BusyPHP\\oauth\\Service"
-			],
-			"config"   : {
-				"oauth" : "src/config/config.php"
-			}
+			]
 		}
 	},
 	"config"      : {
