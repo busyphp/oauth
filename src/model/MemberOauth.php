@@ -186,7 +186,7 @@ class MemberOauth extends Model
         }
         
         // 是否在其他的客户端绑定过
-        if ($oauthInfo->getUnionId() && !$unionInfo = $this->getInfoByUnionId($oauthInfo->getUnionId(), $oauthInfo->getUnionType())) {
+        if ($oauthInfo->getUnionId() && $unionInfo = $this->getInfoByUnionId($oauthInfo->getUnionId(), $oauthInfo->getUnionType())) {
             return $this->bindByOAuthAndUserId($oauth, $unionInfo->userId);
         }
         
