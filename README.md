@@ -1,28 +1,26 @@
-三方登录模块
+BusyPHP OAuth2.0 登录模块
 ===============
 
 ## 说明
 
-用于BusyPHP进行三方登录的基本组件，支持目前主流的三方登录
+用于BusyPHP进行三方登录的基本组件
 
 ## 安装
 ```
 composer require busyphp/oauth
 ```
 
-> 安装成功后在后台 > 开发模式 > 插件管理 进行数据表安装/卸载
+> 安装成功后在后台 > 开发模式 > 插件管理 进行数据表安装
 
-## 配置 `/config/busy-oauth.php`
+> 通过后台 > 系统 > 系统管理 > 系统设置 > 三方登录 进行参数配置
+
+## 配置 `config/oauth.php`
 ```php
 return [
-    // 会员模型类绑定，该模型必须集成 BusyPHP\oauth\interfaces\OAuthModel 接口
-    'member' => Member::class,
-    
-    // 登录接口绑定
-    'types'  => [
-        // 登录类型(int) => [
-        //     'name' => '登录类型名称',
-        //     'class' => '登录接口类，该类必须集成 BusyPHP\oauth\interfaces\OAuth 接口'
+    // 登录驱动配置
+    'drivers'  => [
+        // '驱动别名' => [
+        //     'type' => '驱动名称',
         // ]
     ]
 ];
@@ -32,75 +30,57 @@ return [
 
 ### OAuth2.0接口类
 
-三方登录接口需要集成该接口
+三方登录接口需要继承该接口
 
-> `BusyPHP\oauth\interfaces\OAuth`
-
-### APP授权登录基本接口
-
-三方登录接口需要集成该接口
-
-> `BusyPHP\oauth\interfaces\OAuthApp`
+> `BusyPHP\oauth\Driver`
 
 ### 模型接口
 
-会员模型需要集成该接口
+用户模型需要集成该接口
 
-> `BusyPHP\oauth\interfaces\OAuthModel`
+> `BusyPHP\oauth\interfaces\OAuthUserModelInterface`
 
 ## 使用方法
 
 ```php
 <?php
+namespace app\home\controller;
+
 use BusyPHP\Controller;
-use BusyPHP\model\Field;
-use BusyPHP\oauth\interfaces\OAuth;
-use BusyPHP\oauth\interfaces\OAuthCallback;
-use BusyPHP\oauth\model\MemberOauth;
+use BusyPHP\facade\OAuth;
+use BusyPHP\oauth\interfaces\OAuthInfo;
 
 class Index extends Controller
 {
     public function index()
     {
-        $loginInfo = MemberOauth::init()->login(null, new class implements OAuthCallback {
-            /**
-             * 执行注册校验
-             * @param OAuth $oauth
-             * @return int 返回用户ID代表已注册，则执行绑定，返回0代表用户未注册，则执行注册
-             */
-            public function onCheckRegister(OAuth $oauth) : int
-            {
-                // 已注册，返回用户ID，
-                // 未注册返回 0
-                return 0;
-            }
-    
-    
-            /**
-             * 返回要注册的用户数据
-             * @param OAuth $oauth
-             * @return Field
-             */
-            public function onGetRegisterData(OAuth $oauth) : Field
-            {
-                // 获取到三方登录数据
-                $authInfo = $oauth->onGetInfo();
-                
-                // 构建注册信息
-                $field = new MemberField();
-                $field->setNickname($authInfo->getNickname());
-                $field->setSex($authInfo->getSex());
-                $field->setAvatar($authInfo->getAvatar());
-                
-                return $field;
-            }
+        // 获取驱动
+        $driver = OAuth::driver('驱动别名，由 config/oauth.php 定义');
+        
+        // 设置驱动登录数据，请依据不同的登录驱动提供不同的 OAuthDataInterface
+        $driver->setData();
+        
+        // 执行普通登录
+        $result = $driver->login(UserModel::init(), function(OAuthInfo $auth, UserModel $model) {
+            // 执行注册校验
+            // 如果已注册，请返回注册的用户ID
+            // 否则返回自定义注册数据
+            return [];
         });
         
-        // 会员模型返回的登录信息
-        $loginInfo->modelInfo;
+        // 执行浏览器登录
+        $result = $driver->webLogin('回跳地址', UserModel::init(), function(OAuthInfo $auth, UserModel $model) {
+            // 执行注册校验
+            // 如果已注册，请返回注册的用户ID
+            // 否则返回自定义注册数据
+            return [];
+        });
         
-        // OAuth绑定的登录信息
-        $loginInfo->oauthInfo;
+        // 登录成功返回的 UserModel 数据
+        $result->userInfo;
+        
+        // OAuth授权记录信息
+        $result->oauthInfo;
     }
 }
 ```
