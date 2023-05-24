@@ -10,8 +10,6 @@ class Service extends \think\Service
 {
     public function boot() : void
     {
-        $this->registerRoutes(function() {
-            SystemMenu::registerAnnotation(SettingController::class);
-        });
+        SystemMenu::registerAnnotation(SettingController::class);
     }
 }
