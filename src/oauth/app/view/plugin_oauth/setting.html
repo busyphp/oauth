@@ -1,0 +1,62 @@
+<extend name="@admin:layout"/>
+<block name="content">
+    <div id=":modal_id_app">
+        <template>
+            <input type="hidden" name="id" v-model="id"/>
+
+            <div class="form-group">
+                <label>登录方式</label>
+                <input type="text" class="form-control" value="{$name} - {$id}" disabled/>
+            </div>
+
+            <div class="form-group" v-for="(item,index) in form" :class="{'no-margin-bottom': index+1 === form.length}">
+                <label :class="{required: item.required}">{{item.label}}</label>
+                <select v-if="item.tag === 'select'"
+                        :name="'content['+ item.name +']'"
+                        :required="item.required"
+                        :multiple="item.multiple"
+                        v-model="content[item.name]"
+                        class="form-control">
+                    <option v-for="opt in item.options"
+                            :value="opt.value">
+                        {{opt.text}}
+                    </option>
+                </select>
+
+                <textarea v-else-if="item.tag === 'textarea'"
+                          :name="'content['+ item.name +']'"
+                          :required="item.required"
+                          :rows="item.rows"
+                          :placeholder="item.placeholder"
+                          v-model="content[item.name]"
+                          class="form-control"></textarea>
+
+                <input v-else
+                       :type="item.type || 'text'"
+                       :name="'content['+ item.name +']'"
+                       :placeholder="item.placeholder"
+                       :required="item.required"
+                       v-bind="item.attributes"
+                       v-model="content[item.name]"
+                       class="form-control"/>
+
+                <span class="help-block" v-if="item.help" v-html="item.help"></span>
+            </div>
+        </template>
+    </div>
+</block>
+<script src="/vue.js"></script>
+<block name="foot">
+    <script>
+        busyAdmin.ready(busyAdmin.lib.vue, function () {
+            new Vue({
+                el   : '#:modal_id_app',
+                data : {
+                    form    : <?=json_encode($form ?: [])?>,
+                    id      : '{$id}',
+                    content : <?=json_encode($content ?: new stdClass())?>
+                }
+            });
+        });
+    </script>
+</block>

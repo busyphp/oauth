@@ -3,29 +3,30 @@ declare(strict_types = 1);
 
 namespace BusyPHP\oauth\app\controller;
 
+use BusyPHP\app\admin\controller\develop\plugin\SystemPluginBaseController;
 use BusyPHP\app\admin\model\system\plugin\SystemPlugin;
-use BusyPHP\contract\abstracts\PluginManager;
-use Exception;
+use RuntimeException;
 use think\Response;
+use Throwable;
 
 /**
  * 插件管理
  * @author busy^life <busy.life@qq.com>
- * @copyright (c) 2015--2021 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
- * @version $Id: 2021/11/10 下午10:24 ManagerController.php $
+ * @copyright (c) 2015--2023 ShanXi Han Tuo Technology Co.,Ltd. All rights reserved.
+ * @version $Id: 2021/11/10 下午10:24 PluginController.php $
  */
-class ManagerController extends PluginManager
+class PluginController extends SystemPluginBaseController
 {
     /**
      * 创建表SQL
-     * @var string[]
+     * @var string
      */
-    private $createTableSql = [
-        'oauth' => "CREATE TABLE `#__table_prefix__#member_oauth` (
+    private string $createTableSql = <<<SQL
+CREATE TABLE `#__table_prefix__#plugin_oauth` (
   `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_id` INT(11) NOT NULL DEFAULT '0' COMMENT '会员ID',
-  `type` SMALLINT(2) NOT NULL DEFAULT '0' COMMENT '登录类型',
-  `union_type` SMALLINT(2) NOT NULL DEFAULT '0' COMMENT '厂商类型',
+  `type` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '登录类型',
+  `union_type` VARCHAR(32) NOT NULL DEFAULT '' COMMENT '厂商类型',
   `openid` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'openid',
   `unionid` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '同登录类型唯一值',
   `app_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '三方APPID',
@@ -39,7 +40,7 @@ class ManagerController extends PluginManager
   `nickname` VARCHAR(60) NOT NULL DEFAULT '' COMMENT '昵称',
   `avatar` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '头像',
   `sex` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '性别',
-  `user_info` TEXT NOT NULL COMMENT '登录数据',
+  `user_info` JSON NULL COMMENT '登录数据',
    PRIMARY KEY (`id`),
    KEY `user_id` (`user_id`),
    KEY `type` (`type`),
@@ -47,50 +48,27 @@ class ManagerController extends PluginManager
    KEY `unionid` (`unionid`),
    KEY `app_id` (`app_id`),
    KEY `union_type` (`union_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='OAuth登录'",
-    ];
-    
-    /**
-     * 删除表SQL
-     * @var string[]
-     */
-    private $deleteTableSql = [
-        "DROP TABLE IF EXISTS `#__table_prefix__#member_oauth`",
-    ];
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='OAuth授权登录表'
+SQL;
     
     
     /**
-     * 返回模板路径
-     * @return string
-     */
-    protected function viewPath() : string
-    {
-        return __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR;
-    }
-    
-    
-    /**
-     * 安装插件
-     * @return Response
-     * @throws Exception
+     * @inheritDoc
+     * @throws Throwable
      */
     public function install() : Response
     {
         $model = SystemPlugin::init();
         $model->startTrans();
         try {
-            foreach ($this->deleteTableSql as $item) {
-                $this->executeSQL($item);
+            if ($this->hasTable('plugin_oauth')) {
+                throw new RuntimeException('plugin_oauth数据表已存在');
             }
             
-            foreach ($this->createTableSql as $item) {
-                $this->executeSQL($item);
-            }
-            
+            $this->executeSQL($this->createTableSql);
             $model->setInstall($this->info->package);
-            
             $model->commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $model->rollback();
             
             throw $e;
@@ -104,39 +82,26 @@ class ManagerController extends PluginManager
     
     
     /**
-     * 卸载插件
-     * @return Response
-     * @throws Exception
+     * @inheritDoc
+     * @throws Throwable
      */
     public function uninstall() : Response
     {
-        $model = SystemPlugin::init();
-        $model->startTrans();
-        try {
-            foreach ($this->deleteTableSql as $item) {
-                $this->executeSQL($item);
-            }
-            
-            $model->setUninstall($this->info->package);
-            
-            $model->commit();
-        } catch (Exception $e) {
-            $model->rollback();
-            
-            throw $e;
-        }
-        
-        $this->updateCache();
-        $this->logUninstall();
-        
-        return $this->success('卸载成功');
+        throw new RuntimeException('不支持卸载');
     }
     
     
     /**
-     * 设置插件
-     * @return Response
-     * @return Exception
+     * @inheritDoc
+     */
+    protected function viewPath() : string
+    {
+        return '';
+    }
+    
+    
+    /**
+     * @inheritDoc
      */
     public function setting() : Response
     {

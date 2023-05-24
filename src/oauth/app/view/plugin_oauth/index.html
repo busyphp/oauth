@@ -1,0 +1,56 @@
+<extend name="@admin:layout" />
+<block name="content">
+    <div class="panel panel-default">
+        <include file="@admin/system_manager/nav" />
+        <div class="panel-body">
+            <div data-toggle="busy-table"
+                 data-pagination="false"
+                 data-fixed-right-number="1"
+                 data-bordered="true"
+                 data-url="__URL__">
+                
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th data-field="name"
+                                data-title="登录方式"
+                                data-show-overflow="true">
+                            </th>
+                            
+                            <th data-width="120"
+                                data-field="id"
+                                data-show-overflow="true"
+                                data-formatter="@"
+                                data-title="登录类型">
+                                <script type="text/html"><span class="badge badge-outline-secondary">{{value}}</span></script>
+                            </th>
+                            
+                            <th data-width="120"
+                                data-field="union"
+                                data-show-overflow="true"
+                                data-formatter="@"
+                                data-title="分组">
+                                <script type="text/html"><span class="badge badge-secondary">{{value}}</span></script>
+                            </th>
+
+                            <th data-title="操作"
+                                data-align="center"
+                                data-formatter="@"
+                                width="80">
+                                <script type="text/html">
+                                    <a class="btn btn-success btn-xs"
+                                       data-toggle="busy-modal"
+                                       data-ok="配置"
+                                       data-url="{:url('setting?id=')}{{item.id}}"
+                                       data-form-on-success="@table.reload|@modal.close">
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </script>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</block>
