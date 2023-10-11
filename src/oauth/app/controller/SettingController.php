@@ -77,7 +77,7 @@ class SettingController extends AdminController
      * @throws DataNotFoundException
      * @throws Throwable
      */
-    #[MenuNode(menu: false, name: '配置参数', parent: '/index')]
+    #[MenuNode(menu: false, name: '配置三方登录参数', parent: '/index')]
     public function setting() : Response
     {
         $id         = $this->param('id/s', 'trim');

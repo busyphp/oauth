@@ -238,7 +238,7 @@ abstract class Driver
      * @param Request $request
      * @return bool
      */
-    protected function isApplyAuthRedirected(Request $request) : bool
+    public function isApplyAuthRedirected(Request $request) : bool
     {
         return false;
     }
